@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="Deformable Neural Radiance Fields creates free-viewpoint portraits (nerfies) from casually captured videos.">
+  <meta name="keywords" content="Nerfies, D-NeRF, NeRF">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Propagate And Calibrate: Real-time Passive Non-line-of-sight Tracking</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.svg">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<body>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <div class="navbar-menu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+      <a class="navbar-item" href="https://keunhong.com">
+      <span class="icon">
+          <i class="fas fa-home"></i>
+      </span>
+      </a>
+
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">
+          More Research
+        </a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item" href="https://hypernerf.github.io">
+            Talking Head
+          </a>
+          <a class="navbar-item" href="https://nlos-track.github.io">
+            NLOS-Track
+          </a>
+          <a class="navbar-item" href="https://latentfusion.github.io">
+            Depth From Defocus
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">
+            Propagate And Calibrate: <br/>
+            Real-time Passive Non-line-of-sight Tracking
+          </h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a>Yihao Wang</a><sup>1*</sup>,</span>
+            <span class="author-block">
+              <a>Zhigang Wang</a><sup>1*</sup>,</span>
+            <span class="author-block">
+              <a>Bin Zhao</a><sup>1,2&dagger;</sup>,
+            </span>
+            <span class="author-block">
+              <a>Dong Wang</a><sup>1</sup>,
+            </span>
+            <span class="author-block">
+              <a>Mulin Chen</a><sup>1,2</sup>,
+            </span>
+            <span class="author-block">
+              <a>Xuelong Li</a><sup>1,2&dagger;</sup>,
+            </span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup>1</sup>Shanghai AI Laboratory,</span>
+            <span class="author-block"><sup>2</sup>Northwestern Polytechnical University</span>
+          </div>
+          
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup>*</sup>Equal contribution,</span>
+            <span class="author-block"><sup>&dagger;</sup>Corresponding author</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href="https://arxiv.org/pdf/2011.12948"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2011.12948"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <!-- Video Link. -->
+              <!-- <span class="link-block">
+                <a href="https://www.youtube.com/watch?v=MrKrnHhk8IA"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                  </span>
+                  <span>Video</span>
+                </a>
+              </span> -->
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/google/nerfies"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+              <!-- Dataset Link. -->
+              <span class="link-block">
+                <a href="https://www.kaggle.com/datasets/againstentropy1/nlos-track"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="far fa-images"></i>
+                  </span>
+                  <span>Data</span>
+                </a>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <video id="teaser" autoplay muted loop playsinline height="100%">
+        <!-- <source src="./static/videos/teaser.mp4" type="video/mp4"> -->
+        <source src="./static/videos/demo_1.mp4" type="video/mp4">
+      </video>
+      <h2 class="subtitle has-text-centered">
+        <!-- <span class="dnerf">PAC-Net</span> turns selfie videos from your phone into -->
+        Reconstruct the trajectory of a person out of sight in real time with PAC-Net.
+      </h2>
+    </div>
+  </div>
+</section>
+
+
+<!-- <section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container">
+      <div id="results-carousel" class="carousel results-carousel">
+        <div class="item">
+          <video poster="" id="video_demo_0" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/demo_0.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item">
+          <video poster="" id="video_demo_1" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/demo_1.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item">
+          <video poster="" id="video_demo_0" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/demo_0.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item">
+          <video poster="" id="video_demo_1" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/demo_1.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        </div>
+        <div class="item item-blueshirt">
+          <video poster="" id="blueshirt" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/blueshirt.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+  </div>
+</section> -->
+
+
+<!-- <section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container">
+      <div id="results-carousel" class="carousel results-carousel">
+        <div class="item item-steve">
+          <video poster="" id="steve" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/steve.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-chair-tp">
+          <video poster="" id="chair-tp" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/chair-tp.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-shiba">
+          <video poster="" id="shiba" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/shiba.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-fullbody">
+          <video poster="" id="fullbody" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/fullbody.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-blueshirt">
+          <video poster="" id="blueshirt" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/blueshirt.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-mask">
+          <video poster="" id="mask" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/mask.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-coffee">
+          <video poster="" id="coffee" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/coffee.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-toby">
+          <video poster="" id="toby" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/toby2.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+  </div>
+</section> -->
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Non-line-of-sight (NLOS) tracking has drawn increasing attention in recent years, 
+            due to its ability to detect object motion out of sight. 
+            Most previous works on NLOS tracking rely on active illumination, e.g., laser, and suffer from high cost and elaborate experimental conditions. 
+            Besides, these techniques are still far from practical application due to oversimplified settings. 
+          </p>
+          <p>
+            In contrast, we propose a purely passive method to track a person walking in an invisible room by only observing a relay wall, 
+            which is more in line with real application scenarios, e.g., security. 
+          </p>
+          <p>
+            To excavate imperceptible changes in videos of the relay wall, 
+            we introduce difference frames as an essential carrier of temporal-local motion messages. 
+          </p>
+          <p>
+            In addition, we propose PAC-Net, which consists of alternating propagation and calibration, 
+            making it capable of leveraging both dynamic and static messages on a frame-level granularity. 
+          </p>
+          <p>
+            To evaluate the proposed method, we build and publish the first dynamic passive NLOS tracking dataset, 
+            NLOS-Track, which fills the vacuum of realistic NLOS datasets. NLOS-Track contains thousands of NLOS video clips and corresponding trajectories. 
+            Both real-shot and synthetic data are included.
+          </p>
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+
+    <!-- Paper video. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Video</h2>
+        <div class="publication-video">
+          <video poster="" id="video_demo_0" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/demo_0.mp4"
+                    type="video/mp4">
+          </video>
+          <!-- <iframe src="https://www.youtube.com/embed/MrKrnHhk8IA?rel=0&amp;showinfo=0"
+                  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe> -->
+        </div>
+      </div>
+    </div>
+    <!--/ Paper video. -->
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- PAC-Net. -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">PAC-Net</h2>
+
+        <h3 class="title is-4">Propagate and Calibrate</h3>
+        <div class="content has-text-justified">
+          <p>
+            To exploit both raw-frame stream and difference-frame stream, 
+            we propose a concise dual architecture, 
+            PAC-Net (<b>P</b>ropagate <b>A</b>nd <b>C</b>alibration <b>Net</b>work). 
+            Instead of using a two-branch architecture to process two streams separately, 
+            PAC-Net integrates the motion continuity prior to its workflow 
+            with a specially designed alternating recurrent architecture.
+          </p>
+        </div>
+        <div class="columns is-vcentered">
+          <div class="column has-text-centered">
+            <img src="./static/images/pipeline.svg"
+            alt="Pipeline of using PAC-Net to perform real-time NLOS Tracking"/>
+            <p>Visualization of tracking pipeline with PAC-Net</p>
+          </div>
+        </div>
+        <h3 class="title is-4">Warm-up</h3>
+        <div class="content has-text-justified">
+          <p>
+            We apply a zero-initialization to the hidden state 
+            since we have no knowledge about the hidden scene before the video stream comes in.
+            Besides, we perform a warm-up strategy by disentangling a few early steps as <b>Warm-up Stage</b> 
+            from the original tracking procedure, which provides an appropriate initial hidden state for the following Tracking Stage.
+          </p>
+        </div>
+        <br/>
+      </div>
+    </div>
+    <!--/ PAC-Net. -->
+    
+    <!-- Dataset. -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title">NLOS-Track Dataset</h2>
+      </div>
+    </div>
+    <div class="columns is-centered">
+      <!-- Synthetic Data -->
+      <div class="column">
+        <div class="content">
+          <h3 class="title is-4">Synthetic Data</h3>
+          <p class="has-text-justified">
+            In order to reduce the gap between the synthetic data and the photo-realistic data, we use the Cycles render engine in 
+            <a href="http://blender.org" target="_blank">Blender</a>, 
+            which is a physically-based path tracer and provides excellent performance in rendering realistic images. 
+            All 3D human-like characters and skeleton models for walking animation are acquired from 
+            <a href="https://www.mixamo.com/" target="_blank">Mixamo</a>, 
+            a free animation platform of Adobe.
+          </p>
+          <div class="columns">
+            <img class="synthetic-img"
+            src="./static/images/render-scene.svg"
+            alt="Rendered scene in Blender"
+            width="72%"/>
+          </div>
+          <div class="columns">
+            <img class="synthetic-img"
+            src="./static/images/characters.png"
+            alt="Various characters used in synthetic data"
+            width="56%"/>
+          </div>
+        </div>
+      </div>
+      <!--/ Synthetic Data -->
+
+      <!-- Real-shot Data. -->
+      <div class="column">
+        <h3 class="title is-4">Real-shot Data</h3>
+        <div class="columns is-centered">
+          <div class="column content">
+            <p class="has-text-justified">
+              We use a consumer-grade micro SLR camera (Canon EOS RP) to capture videos of the relay wall at 25 FPS. 
+              To obtain the ground truth of the walking trajectory, we stick a USB camera (HIKVISION E14a) to the ceiling, 
+              which records the whole process of people walking from a top view at 25 FPS as well. 
+              From the top viewed videos, we use Aruco codes to locate the walking person’s coordinate frame by frame at a sub-centimeter precision.
+            </p>
+            <div class="columns">
+              <img class="real-shot-img"
+              src="./static/images/real-shot-scene-0.jpg"
+              alt="Real-shot scene from outside the room"
+              />
+            </div>
+            <div class="columns">
+              <img class="real-shot-img"
+              src="./static/images/real-shot-scene-1.jpg"
+              alt="Real-shot scene from the camera view"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--/ Real-shot Data. -->
+    </div>
+    <!--/ Dataset. -->
+
+    <!-- Animation. -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Tracking Results</h2>
+
+        <!-- Results on Synthetic Data. -->
+        <h3 class="title is-4">Results on Synthetic Data</h3>
+        <div class="content has-text-justified">
+          <p>
+            We visualize the tracking results after propagtion and calibration in two rows.
+            The red squares highlight the difference between trajectories after propagation and calibration,
+            which is consistent with our expectations.
+            The course of warm-up is also visualized with grey dashed lines.
+          </p>
+        </div>
+        <div class="columns is-vcentered">
+          <div class="column has-text-centered">
+            <img src="./static/images/render_compare.svg"
+                 alt="Visualization of tracking results on synthetic data."/>
+            <p>Comparison between trajectories after propagation and calibration on synthetic data</p>
+          </div>
+        </div>
+        <br/>
+        <!--/ Results on Synthetic Data. -->
+
+        <!-- Results on Real-shot Data. -->
+        <h3 class="title is-4">Results on Real-shot Data</h3>
+        <div class="content has-text-justified">
+          <p>
+            We compare results of different methods and observe 
+            obvious jitters of baseline model, 
+            slight stabilization but discontinuities of C-Net,
+            and error accumulation of P-Net. 
+            These observations confirm that it is necessary to capture 
+            both motion and position infomation with PAC-Net.
+          </p>
+        </div>
+        <div class="columns is-vcentered">
+          <div class="column has-text-centered">
+            <img src="./static/images/real_compare.svg"
+                 alt="Visualization of tracking results on synthetic data."/>
+            <p>Comparison of tracking results with different methods on real-shot data</p>
+          </div>
+        </div>
+        <br/>
+        <!--/ Results on Synthetic Data. -->
+
+      </div>
+    </div>
+    <!--/ Animation. -->
+
+    <!-- Concurrent Work. -->
+    <!-- <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Related Links</h2>
+
+        <div class="content has-text-justified">
+          <p>
+            There's a lot of excellent work that was introduced around the same time as ours.
+          </p>
+          <p>
+            <a href="https://arxiv.org/abs/2104.09125">Progressive Encoding for Neural Optimization</a> introduces an idea similar to our windowed position encoding for coarse-to-fine optimization.
+          </p>
+          <p>
+            <a href="https://www.albertpumarola.com/research/D-NeRF/index.html">D-NeRF</a> and <a href="https://gvv.mpi-inf.mpg.de/projects/nonrigid_nerf/">NR-NeRF</a>
+            both use deformation fields to model non-rigid scenes.
+          </p>
+          <p>
+            Some works model videos with a NeRF by directly modulating the density, such as <a href="https://video-nerf.github.io/">Video-NeRF</a>, <a href="https://www.cs.cornell.edu/~zl548/NSFF/">NSFF</a>, and <a href="https://neural-3d-video.github.io/">DyNeRF</a>
+          </p>
+          <p>
+            There are probably many more by the time you are reading this. Check out <a href="https://dellaert.github.io/NeRF/">Frank Dellart's survey on recent NeRF papers</a>, and <a href="https://github.com/yenchenlin/awesome-NeRF">Yen-Chen Lin's curated list of NeRF papers</a>.
+          </p>
+        </div>
+      </div>
+    </div> -->
+    <!--/ Concurrent Work. -->
+
+  </div>
+</section>
+
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@article{wang2023nlosTrack,
+  author    = {Wang, Yihao and Wang, Zhigang and Zhao, Bin and Wang, Dong and Chen, Mulin and Li, Xuelong},
+  title     = {Propagate And Calibrate: Real-time Passive Non-line-of-sight Tracking},
+  journal   = {CVPR},
+  year      = {2023},
+}</code></pre>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <a class="icon-link"
+         href="./static/others/nlos_track_paper.pdf"
+         target="_blank">
+        <i class="fas fa-file-pdf"></i>
+      </a>
+      <a class="icon-link" 
+         href="https://github.com/keunhong" 
+         class="external-link" 
+         disabled 
+         target="_blank">
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is licensed under a 
+            <a rel="license"
+              href="http://creativecommons.org/licenses/by-sa/4.0/"
+              target="_blank">Creative Commons Attribution-ShareAlike 4.0 International License
+            </a>.
+          </p>
+          <p>
+            This means you are free to borrow the 
+            <a
+              href="https://github.com/nerfies/nerfies.github.io" 
+              target="_blank">source code
+            </a> of this website,
+            we just ask that you link back to this page in the footer.
+            Please remember to remove the analytics code included in the header of the website which
+            you do not want on your website.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
