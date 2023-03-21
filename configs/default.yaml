@@ -1,0 +1,54 @@
+model_configs:
+  pretrained: true
+  rnn_type: gru
+  rnn_hdim: 128
+  v_loss: true
+  warm_up: 0
+
+dataset_configs:
+  dataset_root: # fill your dataset path here!
+  train_ratio: 0.8
+  route_len: 128
+  total_len: 250
+  noise_factor: 0
+
+loader_kwargs:
+  num_workers: 4
+  pin_memory: true
+  prefetch_factor: 4
+  persistent_workers: true
+
+train_configs:
+  project_name: # fill your wandb project name here!
+  resume: false
+  resume_path: null
+  batch_size: 32
+  seed: 0
+  device: cuda:0
+  amp: true
+  v_loss_alpha: 500
+  loss_total_alpha: 1000
+
+optim_kwargs:
+  optimizer: AdamW
+  lr: 3.0e-4
+  weight_decay: 2.0e-3
+
+schedule_configs:
+  schedule_type: cosine
+  max_epoch: 70
+  cos_T: 70
+  cos_iters: 1
+  cos_mul: 2
+
+distributed_configs:
+  distributed: false
+  gpu_ids: 0
+  world_size: 1
+  local_rank: 0
+  port: 6666
+
+log_configs:
+  log_dir: # fill your log dir here!
+  save_epoch_interval: 5
+  snapshot_interval: 100
