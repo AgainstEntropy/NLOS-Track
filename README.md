@@ -1,6 +1,8 @@
 # NLOS Tracking
 
-The official codes of CVPR 2023 paper _Propagate And Calibrate: Real-time Passive Non-line-of-sight Tracking_.
+Official codes of CVPR 2023 [Paper](https://arxiv.org/abs/2303.11114) | _Propagate And Calibrate: Real-time Passive Non-line-of-sight Tracking_
+
+View the project webpage [here](https://againstentropy.github.io/NLOS-Track/)!
 
 ## Environment
 
@@ -47,6 +49,12 @@ project_root
         +---0001
             ...
 ```
+
+### Data Loading and Visualization
+
+Follow the code blocks in `data_playground.ipynb` to load and visualize the dataset.
+
+**Coming soon!**
 
 ## Train
 
