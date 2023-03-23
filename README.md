@@ -1,8 +1,9 @@
 # NLOS Tracking
 
-Official codes of CVPR 2023 [Paper](https://arxiv.org/abs/2303.11791) | _Propagate And Calibrate: Real-time Passive Non-line-of-sight Tracking_
+[![Project Website](https://img.shields.io/badge/Project-Website-orange)](https://againstentropy.github.io/NLOS-Track/)
+[![arXiv](https://img.shields.io/badge/arXiv-2303.11791-b31b1b.svg)](https://arxiv.org/abs/2303.11791)
 
-View the project webpage [here](https://againstentropy.github.io/NLOS-Track/)!
+Official codes of CVPR 2023 [Paper](https://arxiv.org/abs/2303.11791) | _Propagate And Calibrate: Real-time Passive Non-line-of-sight Tracking_
 
 ## Environment
 
@@ -75,3 +76,14 @@ python train.py --model_name=PAC-Net --pretrained -b 64 -lr_b 2.5e-4 --gpu_ids=0
 ## Test
 
 Follow the code blocks in `test.ipynb` to test a trained model.
+
+## Ciatation
+
+```bibtex
+@article{wang2023nlosTrack,
+  author   = {Wang, Yihao and Wang, Zhigang and Zhao, Bin and Wang, Dong and Chen, Mulin and Li, Xuelong},
+  title    = {Propagate And Calibrate: Real-time Passive Non-line-of-sight Tracking},
+  journal  = {CVPR},
+  year     = {2023},
+}
+```
