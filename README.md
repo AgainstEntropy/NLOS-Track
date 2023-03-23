@@ -2,10 +2,14 @@
 
 [![Project Website](https://img.shields.io/badge/Project-Website-orange)](https://againstentropy.github.io/NLOS-Track/)
 [![arXiv](https://img.shields.io/badge/arXiv-2303.11791-b31b1b.svg)](https://arxiv.org/abs/2303.11791)
+[![Dataset Download](https://img.shields.io/badge/Dataset-Download-blue)](https://www.kaggle.com/datasets/againstentropy1/nlos-track)
+
 
 Official codes of CVPR 2023 [Paper](https://arxiv.org/abs/2303.11791) | _Propagate And Calibrate: Real-time Passive Non-line-of-sight Tracking_
 
-## Environment
+## Prepreation
+
+### Environment
 
 Create a new environment and install dependencies with `requirement.txt`:
 
@@ -17,7 +21,7 @@ conda activate NLOS_Tracking
 conda install --file requirements.txt
 ```
 
-## Data Prepreation
+### Data 
 
 The NLOS-Track dataset can be downloaded from [kaggle](https://www.kaggle.com/datasets/againstentropy1/nlos-track).
 
@@ -51,13 +55,13 @@ project_root
             ...
 ```
 
-### Data Loading and Visualization
+#### Data Loading and Visualization
 
 Follow the code blocks in `data_playground.ipynb` to load and visualize the dataset.
 
-**Coming soon!**
+## Usage
 
-## Train
+### Train
 
 **Before training, fill the missing items in configuration files.**
 
@@ -73,7 +77,7 @@ or directly use `default.yaml` by default:
 python train.py --model_name=PAC-Net --pretrained -b 64 -lr_b 2.5e-4 --gpu_ids=0,1 --port=8888
 ```
 
-## Test
+### Test
 
 Follow the code blocks in `test.ipynb` to test a trained model.
 
