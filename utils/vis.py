@@ -8,7 +8,7 @@ from utils.tools import fig2array
 
 def draw_route(map_size: ndarray, route: ndarray,
                cmap: str = 'viridis', return_mode: str = None):
-    # route = route * map_size
+    route = route * map_size
     route = route.reshape((-1, 1, 2))
 
     idxs = np.array(range(route.shape[0]))
