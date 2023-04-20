@@ -81,7 +81,7 @@ python train.py --model_name=PAC-Net --pretrained -b 64 -lr_b 2.5e-4 --gpu_ids=0
 
 Follow the code blocks in `test.ipynb` to test a trained model.
 
-## Ciatation
+## Citation
 
 ```bibtex
 @article{wang2023nlosTrack,
