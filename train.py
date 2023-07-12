@@ -69,6 +69,7 @@ if __name__ == '__main__':
     config['model_configs']['warm_up'] = args.warm_up
     config['model_configs']['pretrained'] = args.pretrained
     config['model_configs']['rnn_hdim'] = args.rnn_hdim
+    config['model_configs']['model_name'] = args.model_name
 
     config['dataset_configs']['route_len'] += args.warm_up
 
