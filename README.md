@@ -68,13 +68,13 @@ Follow the code blocks in `data_playground.ipynb` to load and visualize the data
 Create a new configuration file in `./configs` for training:
 
 ```shell
-python train.py --cfg_file=new_cfg --model_name=PAC-Net
+python train.py --cfg_file=new_cfg --model_name=PAC_Net
 ```
 
 or directly use `default.yaml` by default:
 
 ```shell
-python train.py --model_name=PAC-Net --pretrained -b 64 -lr_b 2.5e-4 --gpu_ids=0,1 --port=8888
+python train.py --model_name=PAC_Net --pretrained -b 64 -lr_b 2.5e-4 --gpu_ids=0,1 --port=8888
 ```
 
 ### Test
