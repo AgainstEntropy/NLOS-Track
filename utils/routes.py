@@ -48,7 +48,7 @@ class route_generator(object):
         self.route_length = route_length
 
         self._init_pv()
-        for step in range(route_length):
+        for _ in range(route_length):
             # print(self.velocity)
             self.next_step(turn_rate=turn_rate)
             self.e_route.append(self.e_position.copy())
@@ -116,8 +116,8 @@ class route_generator(object):
         mat_path = os.path.join(save_dir, mat_name)
         save_dict = loadmat(mat_path)
 
-        self.e_route = [p for p in save_dict['route']]
-        self.velocities = [v for v in save_dict['velocities']]
+        self.e_route = list(save_dict['route'])
+        self.velocities = list(save_dict['velocities'])
         print(f'Load data from {mat_path} successfully!')
 
 

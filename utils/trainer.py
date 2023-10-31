@@ -192,20 +192,20 @@ class Trainer_tracking(Trainer_Base):
     def __init__(self, cfg):
         super(Trainer_tracking, self).__init__(cfg=cfg)
 
-        log_train_cfg = {
-            "model_name": self.model_name,
-            **self.model_cfgs,
-            "batch_size": self.train_cfgs['batch_size'],
-            "v_loss_alpha": self.train_cfgs['v_loss_alpha'],
-            "loss_total_alpha": self.train_cfgs['loss_total_alpha'],
-            "resume": self.train_cfgs['resume'],
-            "route_len": self.dataset_cfgs['route_len'],
-            "noise_factor": self.dataset_cfgs['noise_factor'],
-            **self.optim_kwargs,
-            "epochs": self.schedule_cfgs['max_epoch'],
-        }
-
         if self.dist_cfgs['local_rank'] == 0:
+            log_train_cfg = {
+                "model_name": self.model_name,
+                **self.model_cfgs,
+                "batch_size": self.train_cfgs['batch_size'],
+                "v_loss_alpha": self.train_cfgs['v_loss_alpha'],
+                "loss_total_alpha": self.train_cfgs['loss_total_alpha'],
+                "resume": self.train_cfgs['resume'],
+                "route_len": self.dataset_cfgs['route_len'],
+                "noise_factor": self.dataset_cfgs['noise_factor'],
+                **self.optim_kwargs,
+                "epochs": self.schedule_cfgs['max_epoch'],
+            }
+
             self._init_recorder(log_train_cfg)
 
         self.val_metrics = {'x_loss': 0.0,
@@ -278,14 +278,14 @@ class Trainer_tracking(Trainer_Base):
                     'Metric/val/dtw': val_metric[2],
                 }, step=epoch + 1)
                 if self.epoch % 5 == 0:
-                    logger.info(f'Logging images...')
+                    logger.info('Logging images...')
                     self.test_plot(epoch=self.epoch, phase='train')
                     self.test_plot(epoch=self.epoch, phase='val')
 
             self.scheduler.step()
 
             if ((epoch + 1) % self.log_cfgs['save_epoch_interval'] == 0) \
-                    or (epoch + 1) == self.schedule_cfgs['max_epoch']:
+                        or (epoch + 1) == self.schedule_cfgs['max_epoch']:
                 checkpoint_path = os.path.join(self.ckpt_dir, f"epoch_{(epoch + 1)}.pth")
                 self.save_checkpoint(checkpoint_path)
 
@@ -315,7 +315,7 @@ class Trainer_tracking(Trainer_Base):
                         dynamic_ncols=True,
                         ascii=(platform.version() == 'Windows'))
 
-        for step in range(len_loader):
+        for _ in range(len_loader):
             try:
                 inputs, labels, map_sizes = next(iter_loader)
             except Exception as e:
@@ -387,7 +387,7 @@ class Trainer_tracking(Trainer_Base):
             pbar.close()
 
         return (x_loss_recorder.avg, v_loss_recorder.avg), \
-               (pcm_recorder.avg, area_recorder.avg, dtw_recorder.avg)
+                   (pcm_recorder.avg, area_recorder.avg, dtw_recorder.avg)
 
     def val(self, epoch):
         self.model.eval()
@@ -482,13 +482,15 @@ class Trainer_tracking(Trainer_Base):
             metrics = [self.val_metrics[name] for name in names]
             res_table.add_row([f"{m:.4}" if type(m) is float else m for m in metrics[:-1]] + [metrics[-1]])
 
-            logger.info(f'Performance on validation set at epoch: {epoch + 1}\n' + res_table.get_string())
+            logger.info(
+                f'Performance on validation set at epoch: {epoch + 1}\n{res_table.get_string()}'
+            )
 
         return (self.val_metrics['x_loss'], self.val_metrics['v_loss']), \
-               (self.val_metrics['pcm'], self.val_metrics['area'], self.val_metrics['dtw'])
+                   (self.val_metrics['pcm'], self.val_metrics['area'], self.val_metrics['dtw'])
 
     def test_plot(self, epoch, phase: str):
-        assert phase in ['train', 'val']
+        assert phase in {'train', 'val'}
         self.model.eval()
         iter_loader = iter(self.val_loader) if phase == 'val' else iter(self.train_loader)
         frames, gt_routes, map_sizes = next(iter_loader)

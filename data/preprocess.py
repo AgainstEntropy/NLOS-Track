@@ -4,9 +4,7 @@ from torchvision.transforms.functional import resize
 
 def sub_mean(frames: Tensor) -> Tensor:
     mean_frame = frames.mean(axis=0, keepdim=True)
-    frames_sub_mean = frames.sub(mean_frame)
-
-    return frames_sub_mean
+    return frames.sub(mean_frame)
 
 
 def diff(frames: Tensor) -> Tensor:
