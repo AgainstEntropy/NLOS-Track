@@ -12,7 +12,7 @@ class PAC_Cell(nn.Module):
                  rnn_hdim: int = 128):
         super(PAC_Cell, self).__init__()
 
-        assert model_name in ['PAC_Net', 'P_Net', 'C_Net', 'baseline']
+        assert model_name in {'PAC_Net', 'P_Net', 'C_Net', 'baseline'}
         self.rnn_hdim = rnn_hdim
 
         self.backbone_builder = {
@@ -66,7 +66,7 @@ class PAC_Net_Base(nn.Module):
         self.rnn_hdim = rnn_hdim
         self.v_loss = v_loss
 
-        assert model_name in ['PAC_Net', 'P_Net', 'C_Net', 'baseline']
+        assert model_name in {'PAC_Net', 'P_Net', 'C_Net', 'baseline'}
         # CNN
         self.backbone_builder = {
             'PAC_Net': tvmodels.resnet18,
@@ -366,9 +366,7 @@ class C_Net(PAC_Net_Base):
         fx = self.warmup_encoder(rearrange(I, 'b c t h w -> (b t) c h w'))
         fx = rearrange(fx, '(b t) d -> b t d', b=B)
 
-        hx = self.warmup_rnn(fx)[1]  # (2, B, D)
-
-        return hx
+        return self.warmup_rnn(fx)[1]
 
 
 class NLOS_baseline(PAC_Net_Base):

@@ -57,9 +57,9 @@ class TrackingDataset(Dataset):
 def split_dataset(phase: str = 'train', train_ratio: float = 0.8, **kwargs):
     full_dataset = TrackingDataset(**kwargs)
 
-    if phase == 'train':
+    if phase == 'test':
+        return full_dataset
+    elif phase == 'train':
         train_size = int(len(full_dataset) * train_ratio)
         val_size = len(full_dataset) - train_size
         return random_split(full_dataset, [train_size, val_size])
-    elif phase == 'test':
-        return full_dataset

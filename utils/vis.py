@@ -23,7 +23,7 @@ def draw_route(map_size: ndarray, route: ndarray,
     lc.set_array(idxs)
     lc.set_linewidth(3)
     line = ax.add_collection(lc)
-    fig.colorbar(line, ax=ax, ticks=idxs[::int(len(idxs) / 10)], label='step')
+    fig.colorbar(line, ax=ax, ticks=idxs[::len(idxs) // 10], label='step')
 
     ax.set_xlim(0, map_size[0])
     ax.set_xlabel('x')
@@ -40,7 +40,7 @@ def draw_route(map_size: ndarray, route: ndarray,
 
 
 def draw_routes(routes: tuple[ndarray, ndarray], return_mode: str = None):
-    assert return_mode in ['plt_fig', 'fig_array', None]
+    assert return_mode in {'plt_fig', 'fig_array', None}
     titles = ('GT', 'pred')
     cmaps = ('viridis', 'plasma')
 
@@ -59,7 +59,13 @@ def draw_routes(routes: tuple[ndarray, ndarray], return_mode: str = None):
         lc.set_array(idxs)
         lc.set_linewidth(3)
         line = axes[i].add_collection(lc)
-        fig.colorbar(line, ax=axes[i], ticks=idxs[::int(len(idxs) / 10)], label='step', fraction=0.05)
+        fig.colorbar(
+            line,
+            ax=axes[i],
+            ticks=idxs[:: len(idxs) // 10],
+            label='step',
+            fraction=0.05,
+        )
 
         axes[i].set_title(titles[i])
         axes[i].set_xlim(0, 1)

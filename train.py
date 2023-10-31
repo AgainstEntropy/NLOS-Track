@@ -14,7 +14,7 @@ def main(cfg):
     # os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
 
     world_size = len(dist_cfgs['device_ids'].split(','))
-    dist_cfgs['distributed'] = True if world_size > 1 else False
+    dist_cfgs['distributed'] = world_size > 1
     dist_cfgs['world_size'] = world_size
     cfg['loader_kwargs']['batch_size'] = cfg['train_configs']['batch_size'] // world_size
 
